@@ -1,4 +1,5 @@
 import {
+  AudioOutlined,
   ContactsOutlined,
   DashboardFilled,
   FileWordFilled,
@@ -54,6 +55,11 @@ const SideBar: React.FC = () => {
       label: 'Books',
       key: '/books',
       icon: <MdBook />,
+    },
+    {
+      label: 'Audios',
+      key: '/audios',
+      icon: <AudioOutlined />,
     },
   ];
 
