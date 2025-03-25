@@ -6,14 +6,15 @@ import PageTitle from '~/components/PageTitle';
 import { getHeader } from '~/utility/helmet';
 import DrawerForm from './_DrawerForm';
 import TableGrid from './_TableGrid';
+import { modelsName } from '~/constants/models';
 
 const { Title } = Typography;
 
-const model = 'Brand';
-const title = 'Brand';
-const drawerTitle = 'Add Brand';
+const model = modelsName.Book;
+const title = 'Books';
+const drawerTitle = 'Add Book';
 
-const Products = () => {
+const Books = () => {
   const [open, setOpen] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -88,4 +89,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Books;

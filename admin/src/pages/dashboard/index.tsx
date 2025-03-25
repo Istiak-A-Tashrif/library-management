@@ -2,7 +2,7 @@
 const index = () => {
   return (
     <div>
-      hiiii
+      Welcome
     </div>
   );
 };

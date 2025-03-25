@@ -111,3 +111,34 @@ model Attachment {
 
   @@map(name: "attachments")
 }
+
+model Book {
+  id           Int       @id @default(autoincrement())
+  title        String
+  language     String
+  author       String
+  description  String
+  preview_file String
+  price        Decimal
+  chapters     Chapter[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map(name: "books")
+}
+
+model Chapter {
+  id        Int          @id @default(autoincrement())
+  book_id   Int          @unique
+  book      Book         @relation(fields: [book_id], references: [id])
+  name      String
+  file      String
+  type      CHAPTER_TYPE @default(PRIVATE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+enum CHAPTER_TYPE {
+  PRIVATE
+  PUBLIC
+}
