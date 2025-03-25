@@ -1,18 +1,28 @@
-/* eslint-disable */
-
-import { UploadOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { useMutation } from '@tanstack/react-query';
-import { Button, Drawer, Form, Input, InputNumber, Upload, message } from 'antd';
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Space,
+  Upload,
+  message,
+} from 'antd';
 import { useEffect, useState } from 'react';
+import ImageInput from '~/components/ImageInput';
+import { modelsName } from '~/constants/models';
 import { patch, post } from '~/services/api/api';
 import { getUrlForModel } from '~/services/api/endpoints';
 import {
   fileUploadProps,
-  getImageUrlForCloudinaryImage
+  getImageUrlForCloudinaryImage,
+  normFile,
 } from '~/utility/upload';
 import { checkSlug, convertSlugByName } from '~/utility/utils';
 
-// @ts-ignore
 export default function DrawerForm({
   title,
   model,
@@ -24,14 +34,40 @@ export default function DrawerForm({
   ...props
 }) {
   const [form] = Form.useForm();
-  const [slugName, setSlugName] = useState(true);
+
+  const createChapter = useMutation({
+    mutationFn: async (data) => await post(getUrlForModel(modelsName.Chapter), data),
+    onSuccess: () => message.success('Chapters Added Successfully'),
+    onError: () => message.error('Failed to add chapters'),
+  });
+
+  // Function to create chapters
+  const createChapters = (bookId, chapters) => {
+    if (!chapters || chapters.length === 0) return;
+    chapters.forEach((chapter) => {
+      console.log(chapter);
+      
+      if (chapter?.file) {
+        const url = getImageUrlForCloudinaryImage(chapter, 'file');
+        chapter.file = url;
+      }
+      createChapter.mutate({
+        book_id: bookId,
+        name: chapter.name,
+        file: chapter.file || null,
+        type: chapter.type || 'PRIVATE',
+      });
+    });
+  };
 
   const createData = useMutation({
     mutationFn: async (data) => await post(getUrlForModel(model), data.data),
     onSuccess: (response) => {
-      message.success('Saved Successfully');
-      form.resetFields();
+      if (response.data?.id) {
+        createChapters(response.data.id, form.getFieldValue('chapters'));
+      }
       onSubmitSuccess();
+      form.resetFields();
     },
     onError: () => {
       message.error('Something went wrong');
@@ -50,46 +86,6 @@ export default function DrawerForm({
     },
   });
 
-  const onFinish = async (formValues: any) => {
-    console.log(formValues);
-    
-    if (formValues.preview_File) {
-      const url = getImageUrlForCloudinaryImage(formValues, 'preview_File');
-      formValues.preview_File = url;
-    }
-    formValues.price = Number(formValues.price);
-
-    if (isEditing) {
-      updateData.mutate({
-        ...formValues,
-        id: editedItem.id,
-      });
-    } else {
-      // @ts-ignore
-      createData.mutate({
-        data: formValues,
-      });
-    }
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const handelGenerateSlug = (e) => {
-    let name: string = e.target.value;
-    const slug = convertSlugByName(name);
-    const val = {
-      slug: slug,
-    };
-    form.setFieldsValue(val);
-  };
-
-  const handelCheckSlug = (e) => {
-    const slug = checkSlug(e.target.value);
-    setSlugName(slug);
-  };
-
   useEffect(() => {
     if (editedItem) {
       const val = {
@@ -97,11 +93,11 @@ export default function DrawerForm({
         language: editedItem.language,
         author: editedItem.author,
         description: editedItem.description,
-        preview_File: [
+        preview_file: [
           {
             uid: '-1',
             status: 'done',
-            thumbUrl: editedItem.preview_File,
+            thumbUrl: editedItem.preview_file,
           },
         ],
         price: editedItem.price,
@@ -110,115 +106,210 @@ export default function DrawerForm({
     } else {
       form.resetFields();
     }
-  }, [isEditing]);
+  }, [isEditing, editedItem]);
 
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
+  const onFinish = async (formValues: any) => {
+    if (formValues.preview_file) {
+      const url = getImageUrlForCloudinaryImage(formValues, 'preview_file');
+      formValues.preview_file = url;
     }
-    return e && e.fileList;
+
+    formValues.price = Number(formValues.price);
+
+    delete formValues.chapters;
+
+    if (isEditing) {
+      updateData.mutate({
+        ...formValues,
+        id: editedItem.id,
+      });
+    } else {
+      createData.mutate({
+        data: formValues,
+      });
+    }
   };
-  // console.log({ states })
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+    const priceError = errorInfo.errorFields.find((field) => field.name[0] === 'price');
+    if (priceError) {
+      console.log('Price Error Details:', priceError);
+    }
+  };
 
   return (
-    <>
-      <Drawer
-        title={isEditing ? 'Update Book' : 'Add Book'}
-        width={600}
-        onClose={onClose}
-        open={open}
-        bodyStyle={{ paddingBottom: 80 }}
+    <Drawer
+      title={isEditing ? 'Update Book' : 'Add Book'}
+      width={720}
+      onClose={onClose}
+      open={open}
+      bodyStyle={{
+        paddingBottom: 80,
+        // backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+      }}
+    >
+      <Form
+        form={form}
+        name="book-form"
+        layout="vertical"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+        className="space-y-4"
       >
-        <Form
-          form={form}
-          name="basic"
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+        <div className="grid grid-cols-2 gap-4">
           <Form.Item
             label="Title"
             name="title"
-            rules={[{ required: true, message: 'This field is required' }]}
+            rules={[{ required: true, message: 'Required' }]}
           >
-            <Input onChange={handelGenerateSlug} />
+            <Input
+              placeholder="Enter book title"
+              onChange={(e) =>
+                form.setFieldsValue({ slug: convertSlugByName(e.target.value) })
+              }
+            />
           </Form.Item>
+
           <Form.Item
             label="Slug"
             name="slug"
-            rules={[
-              {
-                validator(_, value) {
-                  if (slugName === false) {
-                    return Promise.reject('Please provide a valid slug');
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
+            rules={[{ required: true, message: 'Required' }]}
           >
-            <Input onChange={handelCheckSlug} />
+            <Input placeholder="Auto-generated slug" disabled />
           </Form.Item>
-          <Form.Item
-            label="Language"
-            name="language"
-            // rules={[{ required: true, message: 'This field is required' }]}
-          >
-            {' '}
-            <Input />{' '}
-          </Form.Item>
-          <Form.Item
-            label="Author"
-            name="author"
-            // rules={[{ required: true, message: 'This field is required' }]}
-          >
-            {' '}
-            <Input />{' '}
-          </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            // rules={[{ required: true, message: 'This field is required' }]}
-          >
-            {' '}
-            <Input.TextArea />{' '}
-          </Form.Item>
-          <Form.Item
-            name="preview_File"
-            label="Preview File"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            <Upload
-              name="file"
-              {...fileUploadProps}
-              maxCount={1}
-              listType="picture"
-            >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-          </Form.Item>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
           <Form.Item
             label="Price"
             name="price"
-            rules={[{ required: true, message: 'This field is required' }]}
+            rules={[
+              {
+                required: true,
+                message: 'Price is required',
+              },
+              {
+                type: 'number',
+                min: 0,
+                message: 'Price must be a non-negative number',
+              },
+            ]}
           >
-            {' '}
-            <InputNumber  type='number' min={0} style={{ width: '100%' }} />{' '}
+            <InputNumber
+              type="number"
+              min={0}
+              precision={2}
+              placeholder="Enter book price"
+              className="w-full"
+            />
           </Form.Item>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={createData.isPending || updateData.isPending}
-            >
-              Save
-            </Button>
+
+          <Form.Item label="Language" name="language">
+            <Input placeholder="Book language" />
           </Form.Item>
-        </Form>
-      </Drawer>
-    </>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Form.Item label="Author" name="author">
+            <Input placeholder="Book author" />
+          </Form.Item>
+
+          <ImageInput name="preview_file" label="Preview Image" />
+        </div>
+
+        <Form.Item label="Description" name="description">
+          <Input.TextArea rows={3} placeholder="Enter book description" />
+        </Form.Item>
+
+        <Form.List name="chapters">
+          {(fields, { add, remove }) => (
+            <div className="bg-white p-4 rounded-md shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">Chapters</h3>
+              {fields.map(({ key, name, ...restField }) => (
+                <div key={key} className="flex items-center space-x-4 mb-4 pb-4 border-b">
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'name']}
+                    label="Chapter Name"
+                    className="flex-grow"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <Input placeholder="Chapter title" />
+                  </Form.Item>
+
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'file']}
+                    label="File"
+                    className="flex-grow"
+                    valuePropName="fileList"
+                    getValueFromEvent={normFile}
+                  >
+                    <Upload
+                      accept=".jpg, .jpeg, .png"
+                      className="featured-image"
+                      name="file"
+                      {...fileUploadProps}
+                      maxCount={1}
+                      listType="picture-card"
+                    >
+                      <div className="flex flex-col items-center justify-center">
+                        <UploadOutlined />
+                        <span>Upload</span>
+                      </div>
+                    </Upload>
+                  </Form.Item>
+
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'type']}
+                    label="Type"
+                    className="flex-grow"
+                    initialValue="PRIVATE"
+                  >
+                    <Select
+                      options={[
+                        { label: 'Private', value: 'PRIVATE' },
+                        { label: 'Public', value: 'PUBLIC' },
+                      ]}
+                    />
+                  </Form.Item>
+
+                  <div className="self-end mb-6">
+                    <MinusCircleOutlined
+                      className="text-red-500 text-lg cursor-pointer"
+                      onClick={() => remove(name)}
+                    />
+                  </div>
+                </div>
+              ))}
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+                className="mt-4"
+              >
+                Add Chapter
+              </Button>
+            </div>
+          )}
+        </Form.List>
+
+        <div className="flex justify-end mt-6">
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={createData.isPending || updateData.isPending}
+            className="px-8"
+          >
+            Save
+          </Button>
+        </div>
+      </Form>
+    </Drawer>
   );
 }

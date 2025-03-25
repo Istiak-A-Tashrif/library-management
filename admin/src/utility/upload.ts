@@ -69,3 +69,10 @@ export const fileUploadProps = {
     cloud_name: import.meta.env.VITE_CLOUD_NAME,
   },
 };
+
+export const normFile = (e) => {
+  if (Array.isArray(e)) {
+    return e;
+  }
+  return e && e.fileList;
+};

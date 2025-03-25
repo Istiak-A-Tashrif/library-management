@@ -1,16 +1,14 @@
 /* eslint-disable */
-import { Layout, Spin, theme } from 'antd';
-import React, { useEffect, useState, Suspense } from 'react';
-import HeaderNav from './Header';
-import DashboardSidebar from './Sidebar';
+import { Layout, theme } from 'antd';
+import { Suspense, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
-const { Content, Sider, Footer } = Layout;
-import routes from '../routes';
-import NotFound from './NotFound';
-import BreadCrumb from '~/components/BreadCrumb';
-import UserAvatarDropdown from '~/layouts/UserAvatar';
 import CenterLoader from '~/components/CenterLoader';
-
+import UserAvatarDropdown from '~/layouts/UserAvatar';
+import routes from '../routes';
+import './index.css';
+import NotFound from './NotFound';
+import DashboardSidebar from './Sidebar';
+const { Content, Sider, Footer } = Layout;
 const DefaultLayout = ({ children }: any) => {
   const {
     token: { colorBgContainer },
