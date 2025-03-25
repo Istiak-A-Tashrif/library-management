@@ -1,0 +1,102 @@
+version: '3.9'
+services:
+  espd-db:
+    image: postgres
+    container_name: espd-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - 5959:5432
+    volumes:
+      - espd_pgdata:/var/espd_db/espd_pgdata
+    networks:
+      - espd_internal
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@admin.com
+      PGADMIN_DEFAULT_PASSWORD: 123456
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - espd_internal
+      - espd_web
+
+  dbmanage:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - espd_internal
+      - espd_web
+
+  espd-server:
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+      # Only will build development stage from our dockerfile
+      #target: build
+    container_name: espd-server
+    restart: always
+    env_file:
+      - ./api/.env
+    # Run a command against the development stage of the image
+    #command: npm run start:dev
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./public/uploads:/public/uploads
+    depends_on:
+      - espd-db
+    networks:
+      - espd_internal
+      - espd_api
+
+  frontend-server:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    command: 'npm start'
+    ports:
+      - 3000:3000
+    env_file:
+      - ./website/.env
+    depends_on:
+      - espd-server
+    networks:
+      - espd_api
+
+  admin-server:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    command: 'npm run preview'
+    ports:
+      - 3001:8000
+    env_file:
+      - .env
+    depends_on:
+      - espd-server
+    networks:
+      - espd_api
+
+volumes:
+  espd_pgdata:
+  pgadmin-data:
+
+
+networks:
+  espd_internal:
+    internal: true
+  espd_api:
+  espd_web:

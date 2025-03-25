@@ -1,0 +1,776 @@
+{
+	"info": {
+		"_postman_id": "c5647c75-515e-41f9-8fd2-14e2d0853e43",
+		"name": "TickYto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30370756",
+		"_collection_link": "https://orange-crescent-704118.postman.co/workspace/My-Workspace~4545a77d-eafe-450e-8f6d-949323f18b7b/collection/30370756-c5647c75-515e-41f9-8fd2-14e2d0853e43?action=share&source=collection_link&creator=30370756"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "admin login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"email\": \"admin@email.com\",\n\t\"password\": \"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/admin/login",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create admin user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"email\": \"admin@email.com\",\n\t\"password\": \"123456\",\n    \"first_name\": \"Admin1\",\n    \"last_name\": \"User\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/v1/admin/U39Oxv4w0fGVh3bVtxAVMlwGS3A3FaZP8PdyDn9y2UPujOfR10hBSPFaRO5ud6fQ",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"U39Oxv4w0fGVh3bVtxAVMlwGS3A3FaZP8PdyDn9y2UPujOfR10hBSPFaRO5ud6fQ"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "forgot password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"email\": \"admin1@trace.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/admin/forgot-password",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"forgot-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"email\": \"admin1@trace.com\",\n    \"reset_code\": \"123456\",\n    \"new_password\": \"123123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/admin/reset-password",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"reset-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get configs",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"email\": \"admin1@trace.com\",\n    \"reset_code\": \"123456\",\n    \"new_password\": \"123123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/dashboard/config",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"dashboard",
+										"config"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CRUD",
+					"item": [
+						{
+							"name": "get all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.value).to.eql(100);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{HOST}}/api/v1/crud?model=TeacherOnboardRequest",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"crud"
+									],
+									"query": [
+										{
+											"key": "model",
+											"value": "TeacherOnboardRequest"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all by where",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.value).to.eql(100);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"where\": {\r\n        \"company_id\": 2\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/crud/find-where?model=companyInvite",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"crud",
+										"find-where"
+									],
+									"query": [
+										{
+											"key": "model",
+											"value": "companyInvite"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/crud/1?model=category",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"crud",
+										"1"
+									],
+									"query": [
+										{
+											"key": "model",
+											"value": "category"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"MATT CRAFTON ADDS TRUCK RACING TO THE MOTOR SPORTS TEAM\",\n    \"category\": \"life history\",\n    \"author_name\": \"matt_crafron\",\n    \"author_image\": \"https://scontent.cdninstagram.com/v/t51.2885-19/81370595_995682490830530_9107631296816873472_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent.cdninstagram.com&_nc_cat=102&_nc_ohc=CoDPZ8D_qQEAX9x0eFr&edm=APs17CUBAAAA&ccb=7-5&oh=00_AfAbyCtHCX5M4OkRlgJ69FDaUh03yDNjAl_D4Diw9Ieamw&oe=6523EFEA&_nc_sid=10d13b\",\n    \"image\": \"https://cdn.shopify.com/s/files/1/0678/8333/files/Image_from_iOS_4_b2d96438-d689-459c-81c1-27f612b22e05_480x480.jpg?v=1660075234\",\n    \"short_desc\": \"So how did the classical Latin become so incoherent? According to McClintoc\",\n    \"content\": \"So how did the classical Latin become so incoherent? According to McClintock, a 15th century typesetter likely scrambled part of Cicero's De Finibus in order to provide placeholder text to mockup various fonts for a type specimen book.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/crud?model=settings",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"crud"
+									],
+									"query": [
+										{
+											"key": "model",
+											"value": "settings"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"first_name\": \"{{$randomFirstName}}\",\n\t\"last_name\": \"{{$randomLastName}}\",\n\t\"email\": \"{{$randomEmail}}\",\n\t\"phone\": \"{{$randomPhoneNumber}}\",\n\t\"city\": \"{{$randomCity}}\",\n\t\"country\": \"{{$randomCountry}}\",\n\t\"bio\": \"{{$randomWord}}\",\n\t\"description\": \"{{$randomLoremSentence}}\",\n\t\"expertise\": \"{{$randomWord}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/coaches/1",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"coaches",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete one",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/crud/1?model=user",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"crud",
+										"1"
+									],
+									"query": [
+										{
+											"key": "model",
+											"value": "user"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Level",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/admin/level",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"level"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "upload image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/sihab/Desktop/calander.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/attachments/upload-image",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"attachments",
+								"upload-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Example Data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://90c6-45-118-62-13.ngrok-free.app/api/v1/seeder?model=category",
+							"protocol": "https",
+							"host": [
+								"90c6-45-118-62-13",
+								"ngrok-free",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"seeder"
+							],
+							"query": [
+								{
+									"key": "model",
+									"value": "category"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/admin/advisor/assign?advisor_id=6",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"advisor",
+								"assign"
+							],
+							"query": [
+								{
+									"key": "advisor_id",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Website",
+			"item": [
+				{
+					"name": "Home Page",
+					"item": [
+						{
+							"name": "Get Home page Data",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/home?category_id=1&search_text=Science Fair",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"home"
+									],
+									"query": [
+										{
+											"key": "category_id",
+											"value": "1"
+										},
+										{
+											"key": "search_text",
+											"value": "Science Fair"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Event",
+					"item": [
+						{
+							"name": "Event List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/event/list",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"event",
+										"list"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "perPage",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "category_ids",
+											"value": "1|2",
+											"disabled": true
+										},
+										{
+											"key": "time_range",
+											"value": "2025-01-10|2025-02-11",
+											"disabled": true
+										},
+										{
+											"key": "searchText",
+											"value": "co",
+											"disabled": true
+										},
+										{
+											"key": "event_status",
+											"value": "all",
+											"description": "all, live, upcoming",
+											"disabled": true
+										},
+										{
+											"key": "sortBy",
+											"value": "FROM_OLD",
+											"description": "FROM_OLD, FROM_NEW",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Single Event",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/event/single_event/tech-conference-2025",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"event",
+										"single_event",
+										"tech-conference-2025"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Single Event Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/event/tickets/tech-conference-2025",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"event",
+										"tickets",
+										"tech-conference-2025"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "checkout",
+					"item": [
+						{
+							"name": "Checkout Ticket",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\":1,\r\n    \"ticket_type_id\":1,\r\n    \"total_ticket\":10,\r\n    \"event_id\":1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/checkout",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"checkout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Checkout Ticket Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"total_amount\":1500,\r\n    \"currency\":\"Bangladesh\",\r\n    \"product_name\":\"Bangal product\",\r\n    \"cus_name\":\"Bangal\",\r\n    \"cus_email\":\"banal@email.com\",\r\n    \"cus_add1\":\"Dhaka Bangladesh\",\r\n    \"cus_city\":\"Dhaka\",\r\n    \"cus_postcode\":\"330\",\r\n    \"cus_country\":\"Bangladesh\",\r\n    \"cus_phone\":\"3245023485023\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/payment/init",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"payment",
+										"init"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "http://localhost:8000",
+			"type": "default"
+		},
+		{
+			"key": "TOKEN",
+			"value": "123",
+			"type": "default"
+		},
+		{
+			"key": "HOST",
+			"value": "https://espd-api.onrender.com",
+			"type": "default",
+			"disabled": true
+		},
+		{
+			"key": "TOKEN",
+			"value": "",
+			"type": "default",
+			"disabled": true
+		}
+	]
+}

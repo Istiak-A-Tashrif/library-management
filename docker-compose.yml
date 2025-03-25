@@ -1,0 +1,114 @@
+services:
+  database:
+    image: postgres:16
+    container_name: ${PROJECT_NAME}-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_NAME}
+    expose:
+      - 5432
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    networks:
+      - fashion_internal
+      - fashion_external
+
+  redis:
+    image: redis:7.0.11-alpine
+    container_name: ${PROJECT_NAME}-redis
+    restart: always
+    expose:
+      - 6379
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
+    volumes:
+      - ./cache:/redis-data
+    networks:
+      - fashion_internal
+
+  server:
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+      # Only will build development stage from our dockerfile
+      #target: build
+    container_name: ${PROJECT_NAME}-server
+    image: ${PROJECT_NAME}-server:latest
+    restart: always
+    env_file:
+      - ./api/.env
+    # Run a command against the development stage of the image
+    #command: npm run start:dev
+    ports:
+      - '9003:8000'
+    volumes:
+      - ./public/uploads:/public/uploads
+    depends_on:
+      - database
+    networks:
+      - fashion_internal
+      - fashion_external
+
+  adminer:
+    image: adminer
+    restart: always
+    container_name: ${PROJECT_NAME}-adminer
+    ports:
+      - 9004:8080
+    networks:
+      - fashion_internal
+      - fashion_external
+
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    command: 'npm start'
+    image: ${PROJECT_NAME}-website:latest
+    container_name: ${PROJECT_NAME}-website
+    ports:
+      - 9005:3000
+    env_file:
+      - ./website/.env.local
+    depends_on:
+      - server
+
+  admin-panel:
+    container_name: ${PROJECT_NAME}-admin-panel
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    image: ${PROJECT_NAME}-admin:latest
+    command: 'npm run preview'
+    ports:
+      - 9006:8000
+    env_file:
+      - .env
+    depends_on:
+      - server
+
+  scanner:
+    container_name: ${PROJECT_NAME}-scanner
+    build:
+      context: ./ticket-scanner
+      dockerfile: Dockerfile
+    image: ${PROJECT_NAME}-ticket-scanner:latest
+    command: 'npm run preview'
+    ports:
+      - 9007:8000
+    env_file:
+      - .env
+    depends_on:
+      - server
+
+volumes:
+  fashion_pgdata:
+  pgadmin-data:
+
+
+networks:
+  fashion_internal:
+    internal: true
+  fashion_external:

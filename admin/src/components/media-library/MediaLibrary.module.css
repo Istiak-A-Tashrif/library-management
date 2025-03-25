@@ -1,0 +1,69 @@
+.mediaItem {
+    margin: 10px;
+}
+.card {
+
+}
+
+.modal {
+  top: 10%;
+}
+.image {
+  width: 4rem;
+  height: 4rem;
+
+}
+.insertBtn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.fileName {
+  white-space: nowrap;      /* Prevent text wrapping */
+  overflow: hidden;         /* Hide overflowing text */
+  text-overflow: ellipsis;  /* Display ellipsis (...) for overflow */
+  margin: 0;                /* Remove default margin */
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: 90% !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .modal {
+    width: 85% !important;
+  }
+}
+
+
+.imageList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.imageItem {
+  position: relative;
+  display: inline-block;
+}
+
+.imageItem img {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.removeButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
