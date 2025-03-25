@@ -46,7 +46,7 @@ export default function DrawerForm({
     if (!chapters || chapters.length === 0) return;
     chapters.forEach((chapter) => {
       console.log(chapter);
-      
+
       if (chapter?.file) {
         const url = getImageUrlForCloudinaryImage(chapter, 'file');
         chapter.file = url;
@@ -101,6 +101,21 @@ export default function DrawerForm({
           },
         ],
         price: editedItem.price,
+        // Add chapters prefilling
+        chapters:
+          editedItem.chapters?.map((chapter) => ({
+            name: chapter.name,
+            type: chapter.type || 'PRIVATE',
+            file: chapter.file
+              ? [
+                  {
+                    uid: '-1',
+                    status: 'done',
+                    thumbUrl: chapter.file,
+                  },
+                ]
+              : undefined,
+          })) || [],
       };
       form.setFieldsValue(val);
     } else {
