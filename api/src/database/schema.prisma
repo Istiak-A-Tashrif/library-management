@@ -122,23 +122,21 @@ model Book {
   preview_file String?
   price        Decimal?
   chapters     Chapter[]
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
 
   @@map(name: "books")
 }
 
 model Chapter {
-  id        Int          @id @default(autoincrement())
-  book_id   Int
-  book      Book         @relation(fields: [book_id], references: [id])
-  name      String
-  file      String?
-  type      CHAPTER_TYPE @default(PRIVATE)
+  id         Int          @id @default(autoincrement())
+  book_id    Int
+  book       Book         @relation(fields: [book_id], references: [id])
+  name       String
+  file       String?
+  type       CHAPTER_TYPE @default(PRIVATE)
   created_at DateTime     @default(now())
   updated_at DateTime     @updatedAt
-  Audio     Audio?       @relation(fields: [audioId], references: [id])
-  audioId   Int?
 
   @@map(name: "chapters")
 }
@@ -152,21 +150,20 @@ model Audio {
   description  String?
   preview_file String?
   price        Decimal?
-  chapters     Chapter[]
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-  AudioChapter AudioChapter[]
+  chapters     AudioChapter[]
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
 
   @@map(name: "audios")
 }
 
 model AudioChapter {
-  id        Int          @id @default(autoincrement())
-  audio_id  Int
-  audio     Audio        @relation(fields: [audio_id], references: [id])
-  name      String
-  file      String?
-  type      CHAPTER_TYPE @default(PRIVATE)
+  id         Int          @id @default(autoincrement())
+  audio_id   Int
+  audio      Audio        @relation(fields: [audio_id], references: [id])
+  name       String
+  file       String?
+  type       CHAPTER_TYPE @default(PRIVATE)
   created_at DateTime     @default(now())
   updated_at DateTime     @updatedAt
 
